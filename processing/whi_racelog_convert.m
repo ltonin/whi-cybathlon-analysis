@@ -9,7 +9,7 @@ TotNumRaces = 0;
 
 for fId = 1:nfiles
     cfilepath = files{fId};
-    util_bdisp(['[io] - Extracting log from file ' num2str(fId) '/' num2str(nfiles) ':']);
+    whi_util_bdisp(['[io] - Extracting log from file ' num2str(fId) '/' num2str(nfiles) ':']);
     disp(['     - ' cfilepath]);
     
     % Extracting log events
