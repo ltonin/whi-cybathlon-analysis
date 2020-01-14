@@ -38,17 +38,19 @@ for fId = 1:nfiles
         cPLY = fEVENT.PLY(cindex);
 
         T = fT(cPOS(1):cPOS(end));
-        E = fE(cPOS(1):cPOS(end));
 
-        EVENT.POS = cPOS;
+        E = fE(cPOS(1):cPOS(end));
+        
+        EVENT.POS = cPOS - cPOS(1) + 1;
         EVENT.TYP = cTYP;
         EVENT.PLY = cPLY;
 
         startTime = T(1);
         startdt = currdt + seconds(startTime);
-
+       
         startdt_str = datestr(startdt, 'yyyymmdd.HHMMss');
 
+        T = T - T(1);
         nfilename = [fileparts(cfilepath) '/' startdt_str '.cybathlon.race.mat'];
 
         disp(['[out] - Saving race ' num2str(Races(rId)) ' in file: ' nfilename]);

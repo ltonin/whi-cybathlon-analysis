@@ -19,6 +19,7 @@ function files = whi_util_getfile(root, type, varargin)
     defaultInclude = {};
     defaultExclude = {};
     defaultLevel = 1;
+    defaultVerbose = false;
     
     % Validation functions
     isextension = @(x) assert(ischar(x) && isequal(regexp(x, '\.\w+'), 1), 'type must be an extension (e.g., ''.gdf'')') ;
@@ -33,6 +34,7 @@ function files = whi_util_getfile(root, type, varargin)
     p.addParameter('include', defaultInclude, ispattern);
     p.addParameter('exclude', defaultExclude, ispattern);
     p.addParameter('level', defaultLevel, isnumber);
+    p.addParameter('verbose', defaultVerbose, @(x)islogical(x));
     
     % Parse input
     parse(p, root, type, varargin{:});
@@ -41,6 +43,7 @@ function files = whi_util_getfile(root, type, varargin)
     rule_include    = char2cell(p.Results.include);
     rule_exclude    = char2cell(p.Results.exclude);
     level           = p.Results.level;
+    verbose         = p.Results.verbose;
     
     %% Get files (recurserverly)
     list = get_files(root, type, level);
@@ -56,7 +59,12 @@ function files = whi_util_getfile(root, type, varargin)
     nfiles = length(files);
     
     if(nfiles == 0)
-        error(['[io] - No files found with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
+        %error(['[io] - No files found with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
+        if verbose == true
+            warning('[io] - No files found');
+        end
+        files = {};
+        return
     end
 end
 
