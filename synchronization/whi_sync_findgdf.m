@@ -92,13 +92,13 @@ function racevt = get_race_events(racefile, commands, timetolerance)
     % Load race file
     raclog = load(racefile);
     
-    % Find real player
-    cPLY = raclog.EVENT.PLY(find(raclog.EVENT.TYP == 8800, 1, 'first'));
-    
-    if isempty(cPLY)
-        racevt = nan;
-        return;
-    end
+%     % Find real player
+%     cPLY = raclog.EVENT.PLY(find(raclog.EVENT.TYP == 8800, 1, 'first'));
+%     
+%     if isempty(cPLY)
+%         racevt = nan;
+%         return;
+%     end
     
     % Create a mask to extract only selected commands
     RACCMDMSK = false(length(raclog.EVENT.TYP), 1);
@@ -106,11 +106,15 @@ function racevt = get_race_events(racefile, commands, timetolerance)
         RACCMDMSK = RACCMDMSK | raclog.EVENT.TYP == commands(cId);
     end
 
-    RACCMDMSK = RACCMDMSK & raclog.EVENT.PLY == cPLY;
-    
+%     RACCMDMSK = RACCMDMSK & raclog.EVENT.PLY == cPLY;
     racevt.TYP = raclog.EVENT.TYP(RACCMDMSK);
-    racevt.POS = raclog.EVENT.POS(RACCMDMSK);
-    racevt.T   = raclog.T(racevt.POS);
+    racevt.DUR = raclog.EVENT.DUR(RACCMDMSK);
+    racevt.PLY = raclog.EVENT.PLY(RACCMDMSK);
+    racevt.RAC = raclog.EVENT.RAC(RACCMDMSK);
+    racevt.T   = raclog.T(RACCMDMSK);
+    
+    %racevt.POS = raclog.EVENT.POS(RACCMDMSK);
+    %racevt.T   = raclog.T(racevt.POS);
 
     RACMSK = [true; diff(racevt.T) > timetolerance | diff(racevt.TYP) ~= 0];
 
@@ -121,8 +125,12 @@ function racevt = get_race_events(racefile, commands, timetolerance)
 
     try
         racevt.TYP = racevt.TYP(RACMSK);
-        racevt.POS = racevt.POS(RACMSK);
+        racevt.DUR = racevt.DUR(RACMSK);
+        racevt.PLY = racevt.PLY(RACMSK);
+        racevt.RAC = racevt.RAC(RACMSK);
         racevt.T   = racevt.T(RACMSK);
+%         racevt.POS = racevt.POS(RACMSK);
+%         racevt.T   = racevt.T(RACMSK);
     catch
         keyboard
     end

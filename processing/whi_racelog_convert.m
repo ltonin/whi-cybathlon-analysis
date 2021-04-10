@@ -2,18 +2,19 @@ clearvars; clc;
 
 includepat  = {'raceLog_'};
 depthlevel  = 2;
-datapath = '/home/ltonin/Desktop/2019_cybathlon_whiteam/F1_mi_cybathlon/races/logs/';
+datapath = '/mnt/data/Research/cybathlon/F1_mi_cybathlon/races/logs/';
 files  = whi_util_getfile(datapath, '.txt', 'include', includepat, 'level', depthlevel);
 nfiles = length(files);
 TotNumRaces = 0;
 
 for fId = 1:nfiles
     cfilepath = files{fId};
+    
     whi_util_bdisp(['[io] - Extracting log from file ' num2str(fId) '/' num2str(nfiles) ':']);
     disp(['     - ' cfilepath]);
     
     % Extracting log events
-    [fT, fE, fEVENT] = whi_racelog_extract(cfilepath);
+    fEVENT = whi_racelog_extract2(cfilepath);
 
     % Splitting per race
     Races    = unique(fEVENT.RAC);
@@ -28,22 +29,18 @@ for fId = 1:nfiles
     currTimeFileStr = char(currTimeFileStr{:});
     currdt = datetime([currDateStr ' ' currTimeFileStr], 'InputFormat', 'yyyyMMdd HH-mm-ss');
 
+    
     % Saving file for each race
     for rId = 1:NumRaces
 
         cindex = fEVENT.RAC == Races(rId);
 
-        cPOS = fEVENT.POS(cindex);
-        cTYP = fEVENT.TYP(cindex);
-        cPLY = fEVENT.PLY(cindex);
+        EVENT.TYP = fEVENT.TYP(cindex);
+        EVENT.DUR = fEVENT.DUR(cindex);
+        EVENT.PLY = fEVENT.PLY(cindex);
+        EVENT.RAC = fEVENT.RAC(cindex);
 
-        T = fT(cPOS(1):cPOS(end));
-
-        E = fE(cPOS(1):cPOS(end));
-        
-        EVENT.POS = cPOS - cPOS(1) + 1;
-        EVENT.TYP = cTYP;
-        EVENT.PLY = cPLY;
+        T = fEVENT.T(cindex);
 
         startTime = T(1);
         startdt = currdt + seconds(startTime);
@@ -51,10 +48,10 @@ for fId = 1:nfiles
         startdt_str = datestr(startdt, 'yyyymmdd.HHMMss');
 
         T = T - T(1);
-        nfilename = [fileparts(cfilepath) '/' startdt_str '.cybathlon.race.mat'];
+        nfilename = [datapath '/extracted/' startdt_str '.cybathlon.race.mat'];
 
         disp(['[out] - Saving race ' num2str(Races(rId)) ' in file: ' nfilename]);
-        save(nfilename, 'T', 'E', 'EVENT');
+        save(nfilename, 'T', 'EVENT');
     end
 end
 
