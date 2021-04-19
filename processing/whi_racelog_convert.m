@@ -1,6 +1,6 @@
 clearvars; clc;
 
-includepat  = {'raceLog_'};
+includepat  = {'raceLog_', '2020'};
 depthlevel  = 2;
 datapath = '/mnt/data/Research/cybathlon/F1_mi_cybathlon/races/logs/';
 files  = whi_util_getfile(datapath, '.txt', 'include', includepat, 'level', depthlevel);

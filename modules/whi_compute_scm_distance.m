@@ -31,10 +31,15 @@ nbands    = size(C, 4);
 %% Event creator
 util_disp('[proc] |- Create event labels');
 [~, evtCfb] = proc_get_event2(whi_get_event('continuous-feedback'), nsamples, events.POS, events.TYP, events.DUR);
+
 [~, evtCue] = proc_get_event2(whi_get_event({'both-hands', 'both-feet'}), nsamples, events.POS, events.TYP, events.DUR);
+
 [PadK, ~] = proc_get_event2(whi_get_event({'pad-left', 'pad-right'}), nsamples, events.POS, events.TYP, events.DUR);
+
 [RacK, evtRac] = proc_get_event2(whi_get_event({'race-start'}), nsamples, events.POS, events.TYP, events.DUR);
-Ek = whi_event_label(whi_get_event('eog-on'), whi_get_event('eog-off'), nsamples, events);
+
+Ek = whi_event_eog(whi_get_event('eog-on'), whi_get_event('eog-off'), whi_get_event({'race-start'}), nsamples, events);
+
 
 Mk = labels.samples.Mk;
 Pk = labels.samples.Pk;
@@ -73,6 +78,7 @@ end
 util_disp('[proc] - Computing riemann distance per race', 'b');
 % Index = Ek ~= whi_get_event('eog-on') & (PadK == whi_get_event('pad-left') | PadK == whi_get_event('pad-right')) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
 Index = Ek ~= whi_get_event('eog-on') & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
+% Index = Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
 
 [rD, rDId, mcov] = get_distance(C, PadK, Index, RacK);
 

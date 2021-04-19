@@ -51,52 +51,75 @@ nraces = size(rfisher, 3);
 [corr_mu(2), pval_mu(2)] = corr((1:nraces)', muevo(:, 2));
 [corr_beta(1), pval_beta(1)] = corr((1:nraces)', betaevo(:, 1));
 [corr_beta(2), pval_beta(2)] = corr((1:nraces)', betaevo(:, 2));
+[corr_beta(1), pval_beta(1)] = corr((1:61)', betaevo(1:61, 1));
+[corr_beta(2), pval_beta(2)] = corr((62:nraces)', betaevo(62:end, 1));
 
 %% Plotting evolution 
 fig1 = figure;
-fig_set_position(fig1, 'Top');
-subplot(1, 2, 1);
-h1 = plot(muevo, 'o', 'MarkerSize', 4);
-set(h1, {'MarkerFaceColor'}, get(h1, 'color'));
+% fig_set_position(fig1, 'Top');
+% subplot(1, 2, 1);
+% h1 = plot(muevo, 'o', 'MarkerSize', 4);
+% set(h1, {'MarkerFaceColor'}, get(h1, 'color'));
+% 
+% p1 = polyfit(1:nraces,muevo(:, 1), 3);
+% refcurve(p1);
+% p2 = polyfit(1:nraces,muevo(:, 2), 3);
+% refcurve(p2);
+% %hl = lsline;
+% % set(hl, 'LineWidth', 2);
+% xlabel('race');
+% ylabel('fisher');
+% grid on;
+% title('Evolution fisher score - mu band');
+% legend('lateral', 'medial')
+% ylim([0 0.6]);
+% 
+% cxtick = get(h1(1).Parent, 'XTick');
+% cytick = get(h1(1).Parent, 'YTick');
+% xpos = mean(cxtick(1:2));
+% ypos = mean(cytick(end-1:end));
+% 
+% for lId = 1:length(corr_mu)
+%    text(xpos, ypos - (lId-1)*0.03, ['r=' num2str(corr_mu(lId), '%3.2f') ', p=' num2str(pval_mu(lId), '%3.2f')], 'color', get(h1(lId), 'color')); 
+% end
 
-hl = lsline;
-set(hl, 'LineWidth', 2);
-xlabel('race');
-ylabel('fisher');
-grid on;
-title('Evolution fisher score - mu band');
-legend('lateral', 'medial')
-ylim([0 0.6]);
 
-cxtick = get(h1(1).Parent, 'XTick');
-cytick = get(h1(1).Parent, 'YTick');
-xpos = mean(cxtick(1:2));
-ypos = mean(cytick(end-1:end));
+%subplot(1, 2, 2);
+% h2 = plot(betaevo(:, 1), 'o', 'MarkerSize', 4);
+% set(h2, {'MarkerFaceColor'}, get(h2, 'color'));
+h2 = scatter(1:nraces, betaevo(:, 1), 15, 'filled');
+plot_vline(62, 'k--');
+% p1 = polyfit(1:61,betaevo(1:61, 1), 1);
+% refcurve(p1);
+% p2 = polyfit(62:nraces,betaevo(62:end, 1), 1);
+% refcurve(p2);
 
-for lId = 1:length(corr_mu)
-   text(xpos, ypos - (lId-1)*0.03, ['r=' num2str(corr_mu(lId), '%3.2f') ', p=' num2str(pval_mu(lId), '%3.2f')], 'color', get(h1(lId), 'color')); 
-end
+% p1 = polyfit(1:61,betaevo(1:61, 2), 1);
+% refcurve(p1);
+% p2 = polyfit(62:nraces,betaevo(62:end, 2), 1);
+% refcurve(p2);
 
 
-subplot(1, 2, 2);
-h2 = plot(betaevo, 'o', 'MarkerSize', 4);
-set(h2, {'MarkerFaceColor'}, get(h2, 'color'));
-hl = lsline;
-set(hl, 'LineWidth', 2);
+p2 = polyfit(1:nraces,betaevo(:, 1), 4);
+refcurve(p2);
+xlim([1 127]);
+% 
+% hl = lsline;
+% set(hl, 'LineWidth', 2);
 xlabel('race');
 ylabel('fisher');
 grid on;
 title('Evolution fisher score - beta band');
 legend('lateral', 'medial');
-ylim([0 0.6]);
+% ylim([0 0.6]);
 
-cxtick = get(h2(2).Parent, 'XTick');
-cytick = get(h2(2).Parent, 'YTick');
+cxtick = get(h2.Parent, 'XTick');
+cytick = get(h2.Parent, 'YTick');
 xpos = mean(cxtick(1:2));
 ypos = mean(cytick(end-1:end));
 
 for lId = 1:length(corr_beta)
-   text(xpos, ypos - (lId-1)*0.03, ['r=' num2str(corr_beta(lId), '%3.2f') ', p=' num2str(pval_beta(lId), '%3.2f')], 'color', get(h2(lId), 'color')); 
+   text(xpos, ypos - (lId-1)*0.03, ['r=' num2str(corr_beta(lId), '%3.2f') ', p=' num2str(pval_beta(lId), '%3.2f')]); 
 end
 
 %% Plotting (per month)

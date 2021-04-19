@@ -16,10 +16,11 @@ artifactrej       = 'none'; % {'FORCe', 'none'}
 ForceWinLength    = 1.0;
 spatialfilter     = 'laplacian';
 savedir           = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
-recompute         = true;
+recompute         = false;
 
 
 eog_periods{1} = [datetime('20190902', 'Format', 'yyyyMMdd'); datetime('20190917', 'Format', 'yyyyMMdd')];
+eog_periods{2} = [datetime('20201020', 'Format', 'yyyyMMdd'); datetime('20201111', 'Format', 'yyyyMMdd')];
 
 %% Processing parameters
 nchannels  = 16;
@@ -138,7 +139,7 @@ for fId = 1:NumFiles
     
     %% Get classifier from xml
     classifier_filename = [];
-    if strcmp(modality, 'offline') == false
+    if strcmp(modality, 'offline') == false && strcmp(cinfo.date(1:4), '2019')
         curr_xml = xml2struct(fullfile(cfilepath, 'smr_onlineprotocol.xml'));
         [~, clfname] = fileparts(curr_xml.wtkprotocol.classifiers.smr.Text); 
         classifier_filename = [clfname '.mat'];

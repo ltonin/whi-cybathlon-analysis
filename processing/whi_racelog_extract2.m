@@ -104,7 +104,7 @@ function EVENT = whi_racelog_extract2(filename, varargin)
     end
     
     %% Reading log file
-    tbl_log = readtable(filename, 'HeaderLines', NumHeaderLines, 'ReadVariableNames', DoReadVariableNames);
+    tbl_log = readtable(filename, 'HeaderLines', NumHeaderLines, 'ReadVariableNames', DoReadVariableNames, 'Delimiter', ':');
 
     tbl_times  = table2array(tbl_log(:, 1));
     tbl_events = table2cell(tbl_log(:, 2));
@@ -244,8 +244,11 @@ function EVENT = whi_racelog_extract2(filename, varargin)
             end
         end
     end
-
+    try
     nT   = [T; T(addIdx) - 0.01];
+    catch
+        keyboard
+    end
     nTYP = [TYP; 9000*ones(length(addIdx), 1)];
     nPLY = [PLY; PLY(addIdx)];
     nRAC = [RAC; RAC(addIdx)];

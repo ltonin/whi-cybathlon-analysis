@@ -62,9 +62,12 @@ ChanLbl = {'lateral', 'medial'};
 for bId = 1:size(d, 2)
     subplot(1, 2, bId);
     hold on
-    scatter(raceId, d(:, bId), 'filled');
+    scatter(raceId, d(:, bId), 15, 'filled');
     hold off;
-    refline;
+    plot_vline(62-0.5, 'k--');
+    p = polyfit(raceId, d(:, bId), 4);
+    refcurve(p);
+    
     xlim([min(raceId) max(raceId)]);
     grid on;
     xlabel('run');
@@ -79,7 +82,7 @@ for chId = 1:size(fs, 2)
     for bId = 1:size(fs, 3)
         subplot(2, 2, (chId -1)*size(fs, 2) + bId);
         c = linspace(1,size(d, 1),length(d));
-        scatter(d(:, bId), fs(:, chId, bId), [], c, 'filled');
+        scatter(d(:, bId), fs(:, chId, bId), 15, c, 'filled');
         xlim([0 2]);
         ylim([0 0.7]);
         axis square;
@@ -91,8 +94,10 @@ for chId = 1:size(fs, 2)
     end
 end
         
-        
-    
-   
+       
 
-%plot(distance.race.d(:, 2), fs(:, 1, 2), 'o')
+%% Exporting figures
+figname1 = fullfile(figdir, [subject '.reimann.distance.classes.pdf']);
+figname2 = fullfile(figdir, [subject '.reimann.distance.fisher.pdf']);
+fig_export(fig1, figname1, '-pdf');
+fig_export(fig2, figname2, '-pdf');

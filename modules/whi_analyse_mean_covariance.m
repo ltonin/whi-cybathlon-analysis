@@ -46,9 +46,10 @@ fig_set_position(fig1, 'All');
 FreqLbl = mcovs.settings.covariance.frequencies.label;
 for bId = 1:nbands
     subplot(2, 2, bId);
-    scatter(1:nraces, diffD1(:, bId), 'filled');
+    scatter(1:nraces, diffD1(:, bId), 15, 'filled');
     xlim([1 nraces]);
     ylim([0 3]);
+    plot_vline(61.5, 'k--');
     refline;
     grid on;
     title(['Relative distance class 1: ' FreqLbl{bId}]);
@@ -57,9 +58,11 @@ for bId = 1:nbands
 end
 for bId = 1:nbands
     subplot(2, 2, bId + nbands);
-    scatter(1:nraces, diffD2(:, bId), 'filled');
+    scatter(1:nraces, diffD2(:, bId), 15, 'filled');
+    
     xlim([1 nraces]);
     ylim([0 3]);
+    plot_vline(61.5, 'k--');
     refline;
     grid on;
     title(['Relative distance class 2: ' FreqLbl{bId}]);
@@ -71,9 +74,11 @@ fig2 = figure;
 fig_set_position(fig2, 'All');
 for bId = 1:nbands
     subplot(2, 2, bId);
-    scatter(1:nraces, diffDR1(:, bId), 'filled');
+    scatter(1:nraces, diffDR1(:, bId), 15, 'filled');
+    
     xlim([1 nraces]);
     ylim([0 4]);
+    plot_vline(61.5, 'k--');
     p = polyfit(1:nraces, diffDR1(:, bId), 4);
     refcurve(p);
     grid on;
@@ -83,9 +88,11 @@ for bId = 1:nbands
 end
 for bId = 1:nbands
     subplot(2, 2, bId + nbands);
-    scatter(1:nraces, diffDR2(:, bId), 'filled');
+    scatter(1:nraces, diffDR2(:, bId), 15, 'filled');
+    
     xlim([1 nraces]);
     ylim([0 4]);
+    plot_vline(61.5, 'k--');
     p = polyfit(1:nraces, diffDR2(:, bId), 4);
     refcurve(p);
     grid on;
@@ -93,3 +100,9 @@ for bId = 1:nbands
     ylabel('distance');
     xlabel('run');
 end
+
+%% Exporting figures
+figname1 = fullfile(figdir, [subject '.reimann.distance.relative.pdf']);
+figname2 = fullfile(figdir, [subject '.reimann.distance.reference.pdf']);
+fig_export(fig1, figname1, '-pdf');
+fig_export(fig2, figname2, '-pdf');

@@ -2,7 +2,7 @@ clearvars; clc;
 
 subject = 'F1';
 
-includepat  = {subject};
+includepat  = {subject, '2020'};
 excludepat  = {};
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
@@ -34,7 +34,7 @@ selFreqs    = {'alpha', 'beta-high'};
 %% Concatenate data
 util_disp(['[io]  + Importing ' num2str(nfiles) ' files from ' datapath], 'b');
 
-for fId = 1:nfiles
+for fId = 58:nfiles
     [path, filename, ext] = fileparts(files{fId});
     util_disp(['[io]  + Filename ' num2str(fId, ['%0' num2str(length(num2str(nfiles))) 'd']) '/' num2str(nfiles) ': '  filename ext], 'b');
     

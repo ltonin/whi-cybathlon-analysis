@@ -50,8 +50,11 @@ nsamples = length(labels.samples.Mk);
 
 %% Extract Race events
 [RacK, evtRac] = proc_get_event2(RaceStart, nsamples, events.POS, events.TYP, events.DUR);
-
 RaceDur = evtRac.DUR*TimeResolution;
+
+%% Find change year
+DayNewId = find(ismember(labels.run.Dl(:, 3), '2'), 1);
+RaceNewId = find(evtRac.POS >= find(labels.samples.Dk == DayNewId, 1), 1);
 
 %% Statistics
 nraces = length(evtRac.DUR);
@@ -64,8 +67,8 @@ race.labels = labels;
 
 %% Plotting
 fig1 = figure;
+scatter(1:nraces,RaceDur,20,'filled','o') 
 
-plot(RaceDur, 'o');
 lsline;
 xlabel('race');
 ylabel('time [s]');
@@ -75,6 +78,8 @@ cxtick = get(gca, 'XTick');
 cytick = get(gca, 'YTick');
 xpos = mean(cxtick(1:2));
 ypos = mean(cytick(end-1:end));
+h = plot_vline(RaceNewId-0.5, 'k--');
+legend(h, ['Graz BCI Series 2019' newline 'Cybathlon Global Edition 2020']);
 
 text(xpos, ypos, ['r=' num2str(corr, '%3.2f') ', p=' num2str(pval, '%3.2f')]); 
 

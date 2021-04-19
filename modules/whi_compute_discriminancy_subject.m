@@ -57,7 +57,8 @@ util_disp('[proc] - Create event labels', 'b');
 [PadK, evtPad] = proc_get_event2([201 202 203], nsamples, events.POS, events.TYP, events.DUR);
 [RacK, evtRac] = proc_get_event2(800, nsamples, events.POS, events.TYP, events.DUR);
 [CmdK, evtCmd] = proc_get_event2([101 102 103], nsamples, events.POS, events.TYP, events.DUR);
-Ek = whi_event_label(EOGon, EOGoff, nsamples, events);
+%Ek = whi_event_label(EOGon, EOGoff, nsamples, events);
+Ek = whi_event_eog(whi_get_event('eog-on'), whi_get_event('eog-off'), whi_get_event({'race-start'}), nsamples, events);
 
 Mk = labels.samples.Mk;
 Pk = labels.samples.Pk;
@@ -89,6 +90,7 @@ NumMonths = length(Months);
 %% Compute discriminancy for race, day, week, months
 util_disp('[proc] - Computing discriminancy per race, day, week, and month', 'b');
 Index = Ek ~= EOGon & (PadK == 201 | PadK == 203) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
+%Index = (PadK == 201 | PadK == 203) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
 [rFisher, rFisherId] = get_discriminancy(U, PadK, Index, RacK);
 [dFisher, dFisherId] = get_discriminancy(U, PadK, Index, Dk);
 [wFisher, wFisherId] = get_discriminancy(U, PadK, Index, Wk);
