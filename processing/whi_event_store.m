@@ -10,10 +10,10 @@ experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
 
 racpath     = [rootpath '/' folder '/' subject '_' experiment '/races/logs/extracted/'];
-racinclude  = {'race', '2020'};
+racinclude  = {'race', '2019'};
 
 savepath = 'analysis/events/';
-whi_util_mkdir(pwd, savepath);
+util_mkdir(pwd, savepath);
 
 %% Get Race files
 RaceFiles = whi_util_getfile(racpath, '.mat', 'include', racinclude, 'level', depthlevel);
@@ -34,7 +34,8 @@ for rId = 1:NumRaces
     disp(['     - Race file: ' [cname cext]]);
     
     % Find associated gdf and corresponding delay
-    [cfoundgdf, founddelay] = whi_sync_findgdf(cfile, gdfpath, 'GDFCommands', [1670 1672]);
+   % [cfoundgdf, founddelay] = whi_sync_findgdf(cfile, gdfpath, 'GDFCommands', [1670 1672]); % 2020 Races
+    [cfoundgdf, founddelay] = whi_sync_findgdf(cfile, gdfpath); % 2019 Races
     
     if(isnan(cfoundgdf))
         continue;
