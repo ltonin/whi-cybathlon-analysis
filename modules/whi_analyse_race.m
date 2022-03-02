@@ -2,13 +2,18 @@ clearvars; clc;
 
 subject = 'F1';
 
+rootpath = '/media/stefano/74A0406FA04039BE/';
+folder      = 'cybathlon';
+experiment  = 'mi_cybathlon';
+gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
+
 includepat  = {subject};
 excludepat  = {};
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/psd/'];
 savedir     = ['analysis/' artifactrej '/' spatialfilter '/race/'];
-figdir      = './figures/';
+figdir      = 'figures/';
 
 
 TimeResolution  = 0.0625;
@@ -35,13 +40,13 @@ RaceStart    = 800;
 ProtocolId = [1 2 3];
 ProtocolLb = {'bci-calibration', 'bci-training', 'bci-race'};
 
-files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3([gdfpath datapath], '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
 % Create analysis directory
-util_mkdir('./', savedir);
-util_mkdir('./', figdir);
+util_mkdir(gdfpath, savedir);
+util_mkdir(gdfpath, figdir);
 
 %% Concatenate data
 util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' datapath ':']);
@@ -84,10 +89,10 @@ legend(h, ['Graz BCI Series 2019' newline 'Cybathlon Global Edition 2020']);
 text(xpos, ypos, ['r=' num2str(corr, '%3.2f') ', p=' num2str(pval, '%3.2f')]); 
 
 %% Exporting plots
-figname = fullfile(figdir, [subject '.racetime.pdf']);
+figname = fullfile([gdfpath figdir], [subject '.racetime.pdf']);
 fig_export(fig1, figname, '-pdf');
 
 %% Saving output
-filename = [savedir subject '.race.mat'];
+filename = [gdfpath savedir subject '.race.mat'];
 util_disp(['[out] - Saving race time in ' filename], 'b');
 save(filename, 'race');

@@ -2,22 +2,25 @@ clearvars; clc;
 
 subject = 'F1';
 
-includepat  = {subject, 'mi', '2020', '.cybathlon.'};
+% includepat  = {subject, 'mi', '2020', '.control.'};
+includepat  = {subject, 'mi'};
 excludepat  = {};
 depthlevel  = 2;
 
-rootpath    = '/mnt/data/Research/';
+% rootpath    = '/mnt/data/Research/';
+rootpath = '/media/stefano/74A0406FA04039BE/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
-eventpath   = 'analysis/events/';
+% eventpath   = 'analysis/events/';
+eventpath   = [gdfpath 'analysis/events/'];
 
 artifactrej       = 'none'; % {'FORCe', 'none'}
 ForceWinLength    = 1.0;
 chanlocs32        = 'antneuro32.mat';
 spatialfilter     = 'laplacian';
-savedir           = ['analysis/' artifactrej '/' spatialfilter '/psd/'];
-recompute         = true;
+savedir           = [gdfpath 'analysis/' artifactrej '/' spatialfilter '/psd/'];
+recompute         = false;
 
 
 eog_periods{1} = [datetime('20190902', 'Format', 'yyyyMMdd'); datetime('20190917', 'Format', 'yyyyMMdd')];
@@ -44,7 +47,8 @@ else
 end
 
 %% Create/Check for savepath
-util_mkdir(pwd, savedir);
+% util_mkdir(pwd, savedir);
+util_mkdir(gdfpath, ['analysis/' artifactrej '/' spatialfilter '/psd/']);
 
 %% Processing files
 for fId = 1:NumFiles

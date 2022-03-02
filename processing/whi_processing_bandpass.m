@@ -6,16 +6,18 @@ includepat  = {subject, 'mi'};
 excludepat  = {};
 depthlevel  = 2;
 
-rootpath    = '/mnt/data/Research/';
+% rootpath    = '/mnt/data/Research/';
+rootpath = '/media/stefano/74A0406FA04039BE/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
-eventpath   = 'analysis/events/';
+% eventpath   = 'analysis/events/';
+eventpath   = [gdfpath 'analysis/events/'];
 
 artifactrej       = 'none'; % {'FORCe', 'none'}
 ForceWinLength    = 1.0;
 spatialfilter     = 'laplacian';
-savedir           = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
+savedir           = [gdfpath 'analysis/' artifactrej '/' spatialfilter '/bandpass/'];
 recompute         = false;
 
 
@@ -43,7 +45,8 @@ else
 end
 
 %% Create/Check for savepath
-util_mkdir(pwd, savedir);
+% util_mkdir(pwd, savedir);
+util_mkdir(gdfpath, ['analysis/' artifactrej '/' spatialfilter '/bandpass/']);
 
 %% Processing files
 for fId = 1:NumFiles
@@ -169,7 +172,7 @@ for fId = 1:NumFiles
     
     
     sfilename = [savedir '/' pfilename '.mat'];
-    util_bdisp(['[out] - Saving psd in: ' sfilename]);
+    util_bdisp(['[out] - Saving band pass in: ' sfilename]);
     save(sfilename, 'P', 'events', 'settings', 'classifier'); 
 end
 

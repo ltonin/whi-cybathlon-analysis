@@ -2,7 +2,8 @@ clearvars; clc;
 
 includepat  = {'raceLog_', '2020'};
 depthlevel  = 2;
-datapath = '/mnt/data/Research/cybathlon/F1_mi_cybathlon/races/logs/';
+% datapath = '/mnt/data/Research/cybathlon/F1_mi_cybathlon/races/logs/';
+datapath = '/media/stefano/74A0406FA04039BE/cybathlon/F1_mi_cybathlon/races/logs/';
 files  = whi_util_getfile(datapath, '.txt', 'include', includepat, 'level', depthlevel);
 nfiles = length(files);
 TotNumRaces = 0;

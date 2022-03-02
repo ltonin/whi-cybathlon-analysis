@@ -4,7 +4,8 @@ subject = 'F1';
 depthlevel  = 2;
 
 %% General gdf and race paths
-rootpath    = '/mnt/data/Research/';
+% rootpath    = '/mnt/data/Research/';
+rootpath = '/media/stefano/74A0406FA04039BE/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
@@ -13,7 +14,8 @@ racpath     = [rootpath '/' folder '/' subject '_' experiment '/races/logs/extra
 racinclude  = {'race', '2020'};
 
 savepath = 'analysis/events/';
-whi_util_mkdir(pwd, savepath);
+% whi_util_mkdir(pwd, savepath);
+whi_util_mkdir(gdfpath, savepath);
 
 %% Get Race files
 RaceFiles = whi_util_getfile(racpath, '.mat', 'include', racinclude, 'level', depthlevel);
@@ -35,6 +37,7 @@ for rId = 1:NumRaces
     
     % Find associated gdf and corresponding delay
     [cfoundgdf, founddelay] = whi_sync_findgdf(cfile, gdfpath, 'GDFCommands', [1670 1672]);
+%      [cfoundgdf, founddelay] = whi_sync_findgdf(cfile, gdfpath);
     
     if(isnan(cfoundgdf))
         continue;
@@ -67,7 +70,8 @@ for rId = 1:NumRaces
     pfoundgdf = cfoundgdf;
     
     % Save event MAT file
-    save([savepath evtfilename], 'h');
+%     save([savepath evtfilename], 'h');
+    save([gdfpath savepath evtfilename], 'h');
 end
 
 function [filename, nItem] = generate_event_filename(cGDF, pGDF, nItem)
