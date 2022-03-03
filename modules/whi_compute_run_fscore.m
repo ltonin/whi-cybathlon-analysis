@@ -1,10 +1,11 @@
-clearvars; clc;
+clearvars; %clc;
 
 subject = 'F1';
 
 rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
+gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
 
 includepat  = {subject};
 excludepat  = {};
@@ -37,12 +38,13 @@ RaceEnd      = 8800;
 ProtocolId = [1 2 3];
 ProtocolLb = {'bci-calibration', 'bci-training', 'bci-race'};
 
-files = util_getfile3([datapath], '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
 % Create analysis directory
 util_mkdir('./', savedir);
+
 
 %% Concatenate data
 util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' datapath ':']);
@@ -94,25 +96,15 @@ NumMonths = length(Months);
 % Associate days and races
 DRacK = Dk(StartRacePOS);
 
-%% Compute discriminancy for race, day, week, months
-util_disp('[proc] - Computing discriminancy per race, day, week, and month', 'b');
+%% Compute discriminancy between runs
+util_disp('[proc] - Computing discriminancy between runs', 'b');
 Index = Ek ~= EOGon & (PadK == whi_get_event('pad-left') | PadK == whi_get_event('pad-right')) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
-% Index = Ek ~= EOGon & (PadK == 201 | PadK == 203) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
 %Index = (PadK == 201 | PadK == 203) & Pk == ProtocolId(contains(ProtocolLb, 'bci-race'));
 [rFisher, rFisherId] = get_discriminancy(U, PadK, Index, RacK);
-[dFisher, dFisherId] = get_discriminancy(U, PadK, Index, Dk);
-[wFisher, wFisherId] = get_discriminancy(U, PadK, Index, Wk);
-[mFisher, mFisherId] = get_discriminancy(U, PadK, Index, Nk);
-
+util_bdisp(['[proc] - Found ', num2str(length(rFisherId)), ' valid races with the given inclusion criteria']);
 
 discriminancy.race.fs  = rFisher;
 discriminancy.race.Id  = rFisherId;
-discriminancy.day.fs   = dFisher;
-discriminancy.day.Id   = dFisherId;
-discriminancy.week.fs  = wFisher;
-discriminancy.week.Id  = wFisherId;
-discriminancy.month.fs = mFisher;
-discriminancy.month.Id = mFisherId;
 
 discriminancy.settings.freqs    = settings.spectrogram.freqgrid;
 discriminancy.settings.channels = settings.data.lchannels;
@@ -120,117 +112,73 @@ discriminancy.settings.days     = labels.run.Dl;
 discriminancy.settings.dayraces = DRacK;
 
 %% Saving output
-filename = [savedir subject '.discriminancy.mat'];
-util_disp(['[out] - Saving discriminancy in ' filename], 'b');
+filename = [gdfpath savedir subject '.run.fscore.mat'];
+util_disp(['[out] - Saving fischer score in ' filename], 'b');
 save(filename, 'discriminancy');
 
 
 %% Functions
 function [fs, fsId] = get_discriminancy(P, Pk, DefIndex, SpecK)
-
+    
     label  = unique(SpecK);
     nlabel = length(label);
     nchannels = size(P, 3);
     nfreqs    = size(P, 2);
     
-    fs = nan(nchannels, nfreqs, nlabel);
+    fs = cell(nlabel, nlabel);
     valid = true(nlabel, 1);
-    
-    for lId = 1:nlabel
-        index = SpecK == label(lId);
-        index = index & DefIndex;
-        if sum(index) == 0
-            valid(lId) = false;
+    for lId1 = 1:nlabel
+        
+        util_disp_progress(lId1, nlabel, '        ');
+        
+        if valid(lId1)
+            index1 = SpecK == label(lId1); index1 = index1 & DefIndex;
+            if sum(index1) == 0
+                valid(lId1) = false;
+                continue;
+            end
+        else
             continue;
         end
-    
-        cU = P(index, :, :);
-        cPk = Pk(index);
-        cfs = proc_fisher2(cU, cPk);
-        fs(:, :, lId) = reshape(cfs, nfreqs, nchannels)';
+        cU1 = P(index1, :, :);
+        cPk1 = Pk(index1);
+        classes = unique(cPk1);
+        nclasses = length(classes);
+        
+        for lId2 = 1:nlabel
+            
+            if valid(lId2)
+                index2 = SpecK == label(lId2); index2 = index2 & DefIndex;
+                if sum(index2) == 0
+                    valid(lId2) = false;
+                    continue;
+                end
+            else
+                continue;
+            end
+            
+            
+            cU2 = P(index2, :, :);
+            cPk2 = Pk(index2);           
+            fs_t = nan(nchannels, nfreqs, nclasses);
+            for cId = 1:nclasses
+                samps1 = cPk1 == classes(cId);
+                samps2 = cPk2 == classes(cId);
+                cU = cat(1, cU1(samps1, :, :), cU2(samps2, :, :));
+                cLk = cat(2, ones(1, sum(samps1)), 2*ones(1, sum(samps2)));
+                cfs = proc_fisher2(cU, cLk);
+                fs_t(:, :, cId) = reshape(cfs, nfreqs, nchannels)';
+            end
+            fs{lId1, lId2} = fs_t;
+        end
     end
     
-    fs   = fs(:, :, valid);
+    fs   = fs(valid, valid);
     fsId = label(valid);
+
 end
 
-% %% Discriminancy per race
-% rFisher = nan(nchannels, nfreqs, NumRaces);
-% rValid = true(NumRaces, 1);
-% for rId = 1:NumRaces
-%     index = RacK == rId;
-%     index = index & Ek ~= EOGon & (PadK == 201 | PadK == 203) ;
-%     
-%     if sum(index) == 0
-%         rValid(dId) = false;
-%         continue;
-%     end
-%     
-%     cU = U(index, :, :);
-%     cPk = PadK(index);
-%     fs = proc_fisher2(cU, cPk);
-%     rFisher(:, :, rId) = reshape(fs, nfreqs, nchannels)';
-% end
-% 
-% %% Discriminancy per day
-% dFisher = nan(nchannels, nfreqs, NumDays);
-% dValid = true(NumDays, 1);
-% for dId = 1:NumDays
-%     index = Dk == Days(dId);
-%     index = index & Ek ~= EOGon & (PadK == 201 | PadK == 203) ;
-%     
-%     if sum(index) == 0
-%         dValid(dId) = false;
-%         continue;
-%     end
-%     
-%     cU = U(index, :, :);
-%     cPk = PadK(index);
-%     fs = proc_fisher2(cU, cPk);
-%     dFisher(:, :, dId) = reshape(fs, nfreqs, nchannels)';
-% end
-% dFisher   = dFisher(:, :, dValid);
-% dFisherId = Days(dValid);
-% 
-% %% Discriminancy per week
-% wFisher = nan(nchannels, nfreqs, NumWeeks);
-% wValid = true(NumWeeks, 1);
-% for wId = 1:NumWeeks
-%     index = Wk == Weeks(wId);
-%     index = index & Ek ~= EOGon & (PadK == 201 | PadK == 203) ;
-%     
-%     if sum(index) == 0
-%         wValid(wId) = false;
-%         continue;
-%     end
-%     
-%     cU = U(index, :, :);
-%     cPk = PadK(index);
-%     fs = proc_fisher2(cU, cPk);
-%     wFisher(:, :, wId) = reshape(fs, nfreqs, nchannels)';
-% end
-% wFisher   = wFisher(:, :, wValid);
-% wFisherId = Weeks(wValid);
-% 
-% %% Discriminancy per month
-% mFisher = nan(nchannels, nfreqs, NumMonths);
-% mValid = true(NumMonths, 1);
-% for mId = 1:NumMonths
-%     index = Nk == Months(mId);
-%     index = index & Ek ~= EOGon & (PadK == 201 | PadK == 203) ;
-%     
-%     if sum(index) == 0
-%         mValid(mId) = false;
-%         continue;
-%     end
-%     
-%     cU = U(index, :, :);
-%     cPk = PadK(index);
-%     fs = proc_fisher2(cU, cPk);
-%     mFisher(:, :, mId) = reshape(fs, nfreqs, nchannels)';
-% end
-% mFisher   = mFisher(:, :, mValid);
-% mFisherId = Months(mValid);
+
 
 
 

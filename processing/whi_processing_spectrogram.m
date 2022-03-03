@@ -2,7 +2,8 @@ clearvars; clc;
 
 subject = 'F1';
 
-includepat  = {subject, 'mi', '2020', '.cybathlon.'};
+% includepat  = {subject, 'mi', '2020', '.control.'};
+includepat  = {subject, 'mi'};
 excludepat  = {};
 depthlevel  = 2;
 
@@ -17,7 +18,7 @@ ForceWinLength    = 1.0;
 chanlocs32        = 'antneuro32.mat';
 spatialfilter     = 'laplacian';
 savedir           = ['analysis/' artifactrej '/' spatialfilter '/psd/'];
-recompute         = true;
+recompute         = false;
 
 
 eog_periods{1} = [datetime('20190902', 'Format', 'yyyyMMdd'); datetime('20190917', 'Format', 'yyyyMMdd')];

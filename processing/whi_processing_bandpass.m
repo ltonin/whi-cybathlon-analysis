@@ -18,7 +18,6 @@ spatialfilter     = 'laplacian';
 savedir           = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
 recompute         = false;
 
-
 eog_periods{1} = [datetime('20190902', 'Format', 'yyyyMMdd'); datetime('20190917', 'Format', 'yyyyMMdd')];
 eog_periods{2} = [datetime('20201020', 'Format', 'yyyyMMdd'); datetime('20201111', 'Format', 'yyyyMMdd')];
 
@@ -169,7 +168,7 @@ for fId = 1:NumFiles
     
     
     sfilename = [savedir '/' pfilename '.mat'];
-    util_bdisp(['[out] - Saving psd in: ' sfilename]);
+    util_bdisp(['[out] - Saving band pass in: ' sfilename]);
     save(sfilename, 'P', 'events', 'settings', 'classifier'); 
 end
 

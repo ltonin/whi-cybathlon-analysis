@@ -2,14 +2,19 @@ clearvars; clc;
 
 subject = 'F1';
 
-includepat  = {subject, '2020'};
+rootpath    = '/mnt/data/Research/';
+folder      = 'cybathlon';
+experiment  = 'mi_cybathlon';
+
+
+includepat  = {subject};
 excludepat  = {};
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
 savedir     = ['analysis/' artifactrej '/' spatialfilter '/scm/'];
 
-files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3([datapath], '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
@@ -34,7 +39,7 @@ selFreqs    = {'alpha', 'beta-high'};
 %% Concatenate data
 util_disp(['[io]  + Importing ' num2str(nfiles) ' files from ' datapath], 'b');
 
-for fId = 58:nfiles
+for fId = 1:nfiles %58:nfiles
     [path, filename, ext] = fileparts(files{fId});
     util_disp(['[io]  + Filename ' num2str(fId, ['%0' num2str(length(num2str(nfiles))) 'd']) '/' num2str(nfiles) ': '  filename ext], 'b');
     
@@ -69,7 +74,7 @@ for fId = 58:nfiles
     classifier = cdata.classifier;
     
     util_disp('[out] + Saving covariances', 'b')
-    filepath = fullfile(savedir, [filename '.mat']);
+    filepath = fullfile([savedir], [filename '.mat']);
     util_disp(['      |- Output: ' filepath]);
     save(filepath, 'C', 'events', 'settings', 'classifier');
     

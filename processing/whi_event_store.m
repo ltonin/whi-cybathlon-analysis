@@ -5,6 +5,7 @@ depthlevel  = 2;
 
 %% General gdf and race paths
 rootpath    = '/mnt/data/Research/';
+
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
@@ -14,6 +15,7 @@ racinclude  = {'race', '2019'};
 
 savepath = 'analysis/events/';
 util_mkdir(pwd, savepath);
+
 
 %% Get Race files
 RaceFiles = whi_util_getfile(racpath, '.mat', 'include', racinclude, 'level', depthlevel);

@@ -2,13 +2,18 @@ clearvars; clc;
 
 subject = 'F1';
 
+rootpath    = '/mnt/data/Research/';
+folder      = 'cybathlon';
+experiment  = 'mi_cybathlon';
+gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
+
 includepat  = {subject};
 excludepat  = {};
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/psd/'];
 savedir     = ['analysis/' artifactrej '/' spatialfilter '/race/'];
-figdir      = './figures/';
+figdir      = 'figures/';
 
 
 TimeResolution  = 0.0625;
@@ -40,8 +45,8 @@ nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
 % Create analysis directory
-util_mkdir('./', savedir);
-util_mkdir('./', figdir);
+util_mkdir(gdfpath, savedir);
+util_mkdir(gdfpath, figdir);
 
 %% Concatenate data
 util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' datapath ':']);
