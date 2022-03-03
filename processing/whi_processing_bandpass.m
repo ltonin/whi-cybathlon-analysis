@@ -6,20 +6,17 @@ includepat  = {subject, 'mi'};
 excludepat  = {};
 depthlevel  = 2;
 
-% rootpath    = '/mnt/data/Research/';
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
-% eventpath   = 'analysis/events/';
-eventpath   = [gdfpath 'analysis/events/'];
+eventpath   = 'analysis/events/';
 
 artifactrej       = 'none'; % {'FORCe', 'none'}
 ForceWinLength    = 1.0;
 spatialfilter     = 'laplacian';
-savedir           = [gdfpath 'analysis/' artifactrej '/' spatialfilter '/bandpass/'];
+savedir           = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
 recompute         = false;
-
 
 eog_periods{1} = [datetime('20190902', 'Format', 'yyyyMMdd'); datetime('20190917', 'Format', 'yyyyMMdd')];
 eog_periods{2} = [datetime('20201020', 'Format', 'yyyyMMdd'); datetime('20201111', 'Format', 'yyyyMMdd')];
@@ -45,8 +42,7 @@ else
 end
 
 %% Create/Check for savepath
-% util_mkdir(pwd, savedir);
-util_mkdir(gdfpath, ['analysis/' artifactrej '/' spatialfilter '/bandpass/']);
+util_mkdir(pwd, savedir);
 
 %% Processing files
 for fId = 1:NumFiles

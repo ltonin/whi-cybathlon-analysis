@@ -2,7 +2,7 @@ clearvars; clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
@@ -12,8 +12,7 @@ artifactrej   = 'none'; % {'FORCe', 'none'}
 discrpath    = ['analysis/' artifactrej '/' spatialfilter '/discriminancy/'];
 distpath    = ['analysis/' artifactrej '/' spatialfilter '/reimann_distance/'];
 figdir      = 'figures/';
-% util_mkdir('./', figdir);
-util_mkdir(gdfpath, figdir);
+util_mkdir('./', figdir);
 
 %% Loading data
 discrfilename = [gdfpath discrpath subject '.discriminancy.mat'];

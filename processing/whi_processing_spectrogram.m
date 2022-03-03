@@ -7,19 +7,17 @@ includepat  = {subject, 'mi'};
 excludepat  = {};
 depthlevel  = 2;
 
-% rootpath    = '/mnt/data/Research/';
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
-% eventpath   = 'analysis/events/';
-eventpath   = [gdfpath 'analysis/events/'];
+eventpath   = 'analysis/events/';
 
 artifactrej       = 'none'; % {'FORCe', 'none'}
 ForceWinLength    = 1.0;
 chanlocs32        = 'antneuro32.mat';
 spatialfilter     = 'laplacian';
-savedir           = [gdfpath 'analysis/' artifactrej '/' spatialfilter '/psd/'];
+savedir           = ['analysis/' artifactrej '/' spatialfilter '/psd/'];
 recompute         = false;
 
 
@@ -47,8 +45,7 @@ else
 end
 
 %% Create/Check for savepath
-% util_mkdir(pwd, savedir);
-util_mkdir(gdfpath, ['analysis/' artifactrej '/' spatialfilter '/psd/']);
+util_mkdir(pwd, savedir);
 
 %% Processing files
 for fId = 1:NumFiles

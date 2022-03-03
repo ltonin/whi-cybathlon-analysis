@@ -2,7 +2,7 @@ clearvars; clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
@@ -14,7 +14,7 @@ artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/scm/'];
 savedir     = ['analysis/' artifactrej '/' spatialfilter '/reimann_distance/'];
 
-files = util_getfile3([gdfpath datapath], '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
@@ -23,8 +23,7 @@ ProtocolId = [1 2 3];
 ProtocolLb = {'bci-calibration', 'bci-training', 'bci-race'};
 
 % Create analysis directory
-% util_mkdir('./', savedir);
-util_mkdir(gdfpath, savedir);
+util_mkdir('./', savedir);
 
 %% Concatenate covariances
 util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' datapath ':']);
@@ -117,11 +116,11 @@ mcovariance.labels.run.DRacK = DRacK;
 mcovariance.settings = settings;
 
 %% Saving output
-filename = [gdfpath savedir subject '.reimann_distance_v2.mat'];
+filename = [savedir subject '.reimann_distance_v2.mat'];
 util_disp(['[out] - Saving reimann distance in ' filename], 'b');
 save(filename, 'distance');
 
-filename = [gdfpath savedir subject '.mean_covariance.mat'];
+filename = [savedir subject '.mean_covariance.mat'];
 util_disp(['[out] - Saving mean covariance in ' filename], 'b');
 save(filename, 'mcovariance');
 

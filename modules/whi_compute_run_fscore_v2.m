@@ -2,10 +2,9 @@ clearvars; %clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
-gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
 
 includepat  = {subject};
 excludepat  = {};
@@ -38,16 +37,16 @@ RaceEnd      = 8800;
 ProtocolId = [1 2 3];
 ProtocolLb = {'bci-calibration', 'bci-training', 'bci-race'};
 
-files = util_getfile3([gdfpath datapath], '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
 % Create analysis directory
-% util_mkdir('./', savedir);
-util_mkdir(gdfpath, savedir);
+util_mkdir('./', savedir);
+
 
 %% Concatenate data
-util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' [gdfpath datapath] ':']);
+util_bdisp(['[io] - Importing ' num2str(nfiles) ' files from ' datapath ':']);
 [F, events, labels, classifiers, settings] = whi_concatenate_psd(files);
 
 
@@ -112,7 +111,7 @@ discriminancy.settings.days     = labels.run.Dl;
 discriminancy.settings.dayraces = DRacK;
 
 %% Saving output
-filename = [gdfpath savedir subject '.run.fscore_v2.mat'];
+filename = [savedir subject '.run.fscore_v2.mat'];
 util_disp(['[out] - Saving fischer score in ' filename], 'b');
 save(filename, 'discriminancy');
 

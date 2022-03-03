@@ -2,20 +2,14 @@ clearvars; clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
-folder      = 'cybathlon';
-experiment  = 'mi_cybathlon';
-gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
-
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/discriminancy/'];
 figdir      = 'figures/';
-util_mkdir(gdfpath, figdir);
-% util_mkdir('./', figdir);
+util_mkdir('./', figdir);
 
 %% Loading data
-filename = [gdfpath datapath subject '.run.fscore_v2.mat'];
+filename = [datapath subject '.run.fscore_v2.mat'];
 util_disp(['[io] - Loading discriminancy from: ' filename], 'b');
 discriminancy = struct2array(load(filename));
 
@@ -93,8 +87,8 @@ fig1 = figure;
 fig_set_position(fig1, 'All');
 for cId = 1:nclasses
     subplot(2, 2, cId+(cId-1));
-    scatter(1:nraces, fs_mu(3,cId,:), 15, 'filled')
-    p = polyfit(1:nraces, fs_mu(3,cId,:), 4);
+    scatter(1:nraces, squeeze(fs_mu(3,cId,:)), 15, 'filled')
+    p = polyfit(1:nraces, squeeze(fs_mu(3,cId,:)), 4);
     refcurve(p);
     
     xlim([0 nraces]);
@@ -114,8 +108,8 @@ for cId = 1:nclasses
 end
 for cId = 1:nclasses
     subplot(2, 2, cId+(cId-1)+1);
-   scatter(1:nraces, fs_beta(3,cId,:), 15, 'filled')
-   p = polyfit(1:nraces, fs_beta(3,cId,:), 4);
+   scatter(1:nraces, squeeze(fs_beta(3,cId,:)), 15, 'filled')
+   p = polyfit(1:nraces, squeeze(fs_beta(3,cId,:)), 4);
    refcurve(p);
     
     xlim([0 nraces]);
@@ -141,13 +135,14 @@ subplot(1, 2, 1);
 h1 = scatter(1:nraces, squeeze(mean(fs_mu(3,:,:),2)), 15, 'filled');
 p1 = polyfit(1:nraces, squeeze(mean(fs_mu(3,:,:),2)), 4);
 refcurve(p1);
-
+xlim([0 nraces]);
+ylim([0 1.4]);
 v1 = plot_vline(new_year_idx-0.5, 'k--');
 for d = 1:length(update_class_idx)
     v2 = plot_vline(update_class_idx(d)-0.5, 'r--');
 end
 
-xlim([0 nraces]);
+
 xlabel('race');
 ylabel('fisher');
 grid on;
@@ -159,21 +154,23 @@ h2 = scatter(1:nraces, squeeze(mean(fs_beta(3,:,:),2)), 15, 'filled');
 p2 = polyfit(1:nraces, squeeze(mean(fs_beta(3,:,:),2)), 4);
 refcurve(p2);
 
+xlim([0 nraces]);
+ylim([0 1.4]);
 v1 = plot_vline(new_year_idx-0.5, 'k--');
 for d = 1:length(update_class_idx)
     v2 = plot_vline(update_class_idx(d)-0.5, 'r--');
 end
 
-xlim([0 nraces]);
+
 xlabel('race');
 ylabel('fisher');
 grid on;
-title('Evolution fisher score - beta band');
+title('Within-class - beta band');
 legend([v1, v2], {'   2019-2020', strcat('   classifier', string(newline), '   update')}, 'Location', 'northwest')
 
 %% Exporting figures
-figname1 = fullfile([gdfpath figdir], [subject '.run.fscore.allchans.classes.pdf']);
-figname2 = fullfile([gdfpath figdir], [subject '.run.fscore.allchans.pdf']);
+figname1 = fullfile(figdir, [subject '.run.fscore.allchans.classes.pdf']);
+figname2 = fullfile(figdir, [subject '.run.fscore.allchans.pdf']);
 fig_export(fig1, figname1, '-pdf');
 fig_export(fig2, figname2, '-pdf');
 
@@ -181,7 +178,7 @@ fig_export(fig2, figname2, '-pdf');
 fs_within.muevo = fs_mu;
 fs_within.betaevo = fs_beta;
 
-filename = [gdfpath datapath subject '.fscore4stat.mat'];
+filename = [datapath subject '.fscore4stat.mat'];
 util_disp(['[out] - Saving discriminancy in ' filename], 'b');
 save(filename, 'fs_within');
 

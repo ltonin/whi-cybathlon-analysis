@@ -2,7 +2,7 @@ clearvars; clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
 gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
@@ -40,7 +40,7 @@ RaceStart    = 800;
 ProtocolId = [1 2 3];
 ProtocolLb = {'bci-calibration', 'bci-training', 'bci-race'};
 
-files = util_getfile3([gdfpath datapath], '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3(datapath, '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
@@ -89,10 +89,10 @@ legend(h, ['Graz BCI Series 2019' newline 'Cybathlon Global Edition 2020']);
 text(xpos, ypos, ['r=' num2str(corr, '%3.2f') ', p=' num2str(pval, '%3.2f')]); 
 
 %% Exporting plots
-figname = fullfile([gdfpath figdir], [subject '.racetime.pdf']);
+figname = fullfile(figdir, [subject '.racetime.pdf']);
 fig_export(fig1, figname, '-pdf');
 
 %% Saving output
-filename = [gdfpath savedir subject '.race.mat'];
+filename = [savedir subject '.race.mat'];
 util_disp(['[out] - Saving race time in ' filename], 'b');
 save(filename, 'race');

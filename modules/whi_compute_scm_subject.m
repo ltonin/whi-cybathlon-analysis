@@ -2,10 +2,10 @@ clearvars; clc;
 
 subject = 'F1';
 
-rootpath = '/media/stefano/74A0406FA04039BE/';
+rootpath    = '/mnt/data/Research/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
-gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
+
 
 includepat  = {subject};
 excludepat  = {};
@@ -14,13 +14,12 @@ artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/bandpass/'];
 savedir     = ['analysis/' artifactrej '/' spatialfilter '/scm/'];
 
-files = util_getfile3([gdfpath datapath], '.mat', 'include', includepat, 'exclude', excludepat);
+files = util_getfile3([datapath], '.mat', 'include', includepat, 'exclude', excludepat);
 nfiles = length(files);
 util_bdisp(['[io] - Found ' num2str(nfiles) ' files with the inclusion/exclusion criteria: (' strjoin(includepat, ', ') ') / (' strjoin(excludepat, ', ') ')']);
 
 % Create analysis directory
-% util_mkdir('./', savedir);
-util_mkdir(gdfpath, savedir);
+util_mkdir('./', savedir);
 
 %% Parameters
 wshift  = 0.0625;   % [s]
@@ -75,7 +74,7 @@ for fId = 1:nfiles %58:nfiles
     classifier = cdata.classifier;
     
     util_disp('[out] + Saving covariances', 'b')
-    filepath = fullfile([gdfpath savedir], [filename '.mat']);
+    filepath = fullfile([savedir], [filename '.mat']);
     util_disp(['      |- Output: ' filepath]);
     save(filepath, 'C', 'events', 'settings', 'classifier');
     

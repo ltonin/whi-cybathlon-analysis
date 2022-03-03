@@ -5,17 +5,15 @@ subject = 'F1';
 rootpath = '/media/stefano/74A0406FA04039BE/';
 folder      = 'cybathlon';
 experiment  = 'mi_cybathlon';
-gdfpath     = [rootpath '/' folder '/' subject '_' experiment '/'];
 
 spatialfilter = 'laplacian';
 artifactrej   = 'none'; % {'FORCe', 'none'}
 datapath    = ['analysis/' artifactrej '/' spatialfilter '/discriminancy/'];
 figdir      = 'figures/';
-util_mkdir(gdfpath, figdir);
-% util_mkdir('./', figdir);
+util_mkdir('./', figdir);
 
 %% Loading data
-filename = [gdfpath datapath subject '.run.fscore.mat'];
+filename = [datapath subject '.run.fscore.mat'];
 util_disp(['[io] - Loading discriminancy from: ' filename], 'b');
 discriminancy = struct2array(load(filename));
 
@@ -287,11 +285,11 @@ title('Evolution fisher score - beta band');
 legend([v1, v2], {'   2019-2020', strcat('   classifier', string(newline), '   update')}, 'Location', 'northwest')
 
 %% Exporting figures
-figname1 = fullfile([gdfpath figdir], [subject '.run.fscore.lateral.pdf']);
-figname2 = fullfile([gdfpath figdir], [subject '.run.fscore.medial.pdf']);
-figname3 = fullfile([gdfpath figdir], [subject '.run.fscore.allchans.pdf']);
-figname4 = fullfile([gdfpath figdir], [subject '.fscore.reference.allchans.pdf']);
-figname5 = fullfile([gdfpath figdir], [subject '.fscore.reference.allchans.allclass.pdf']);
+figname1 = fullfile(figdir, [subject '.run.fscore.lateral.pdf']);
+figname2 = fullfile(figdir, [subject '.run.fscore.medial.pdf']);
+figname3 = fullfile(figdir, [subject '.run.fscore.allchans.pdf']);
+figname4 = fullfile(figdir, [subject '.fscore.reference.allchans.pdf']);
+figname5 = fullfile(figdir, [subject '.fscore.reference.allchans.allclass.pdf']);
 fig_export(fig1, figname1, '-pdf');
 fig_export(fig2, figname2, '-pdf');
 fig_export(fig3, figname3, '-pdf');
@@ -299,7 +297,7 @@ fig_export(fig4, figname4, '-pdf');
 fig_export(fig5, figname5, '-pdf');
 
 %% Saving output
-filename = [gdfpath datapath subject '.discriminancy.reference.mat'];
+filename = [datapath subject '.discriminancy.reference.mat'];
 util_disp(['[out] - Saving distance reference in ' filename], 'b');
 save(filename, 'diffDAmu', 'diffDAbeta');
 
